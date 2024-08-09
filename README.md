@@ -37,6 +37,13 @@ process.freeze(PID)
 process.unfreeze(PID)
 process.kill(PID) -- kills specified process
 ```
+- Requests
+```lua
+local session = ZYD.session:new(proxy,username,password) -- Args are not required
+session:get(url,headers) -- returns html code as string, headers should be in table - ex. {["Host"]="a.com"}
+session:post(url,headers,data) -- headers and data should be in table
+```
+-
 ## Credits
 [Lodepng](https://github.com/lvandeve/lodepng)
 
