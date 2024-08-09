@@ -6,7 +6,7 @@ This project is a toolkit designed for developers working on Windows. It brings 
 
 ## Features
 
--ImGui
+- ImGui
 ```lua
 local text = "Hello, World!"
 local checkboxValue = false
