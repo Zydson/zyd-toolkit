@@ -6,6 +6,33 @@ This project is a toolkit designed for developers working on Windows. It brings 
 
 ## Features
 
+-ImGui
+```lua
+local text = "Hello, World!"
+local checkboxValue = false
+local sliderFloatValue = 0.5
+local sliderIntValue = 50
+local inputTextValue = "It is example"
+local comboIndex = 1
+local comboItems = {"Option 1", "Option 2", "Option 3"}
+local colorValue = {1.0, 0.0, 0.0, 1.0}
+
+local function lua_render()
+    ImGuiC.Text(text)
+    checkboxValue = ImGuiC.Checkbox(text, checkboxValue)
+    sliderIntValue = ImGuiC.SliderInt(text, sliderIntValue, 0, 100)
+    sliderFloatValue = ImGuiC.SliderFloat(text, sliderFloatValue, 0.0, 1.0)
+    inputTextValue = ImGuiC.InputText(text, inputTextValue)
+    comboIndex = ImGuiC.Combo(text, comboItems, comboIndex)
+    local r, g, b, a = ImGuiC.ColorButton(text, colorValue[1], colorValue[2], colorValue[3], colorValue[4])
+end
+
+imgui.initialize(title, width, height)
+
+while true do
+    imgui.renderFrame()
+end
+```
 - Mouse
 ```lua
 -- Click mouse buttons at specific coords (if not specified then current location will be used)
