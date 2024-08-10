@@ -17,13 +17,14 @@ ZYD.Errors = {
 }
 
 package.cpath = package.cpath .. ";./modules/?.dll"
-local json = require "modules/json" 		-- Json Library
-local base64 = require "modules/base64"	-- Base64 Library
-local mouse = require("z_mouse")				-- Mouse API
-local keyboard = require("z_keyboard")	-- Keyboard API
-local screen = require("z_screen")			-- Screen API
-local window = require("z_window")			-- Window API
-local process = require("z_process")		-- Process API
+json = require "modules/json" 		-- Json Library
+base64 = require "modules/base64"	-- Base64 Library
+mouse = require("z_mouse")			-- Mouse API
+keyboard = require("z_keyboard")	-- Keyboard API
+screen = require("z_screen")		-- Screen API
+window = require("z_window")		-- Window API
+process = require("z_process")		-- Process API
+imgui = require("z_imgui")			-- ImGui
 
 local _screenshot_hook = screen.getScreenshot
 screen.getScreenshot = function()

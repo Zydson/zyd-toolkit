@@ -42,12 +42,12 @@ void CreateDeviceD3D() {
     sd.SampleDesc.Count = 1;
     sd.Windowed = TRUE;
     HRESULT hr = D3D10CreateDeviceAndSwapChain(NULL, D3D10_DRIVER_TYPE_HARDWARE, NULL, 0, D3D10_SDK_VERSION, &sd, &g_pSwapChain, &g_pd3dDevice);
-    if (FAILED(hr)) { MessageBox(NULL, "swap chain", "error", MB_OK); return; }
+    if (FAILED(hr)) { MessageBox(NULL, "swap chain", "Error", MB_OK); return; }
     ID3D10Texture2D* pBackBuffer;
     hr = g_pSwapChain->GetBuffer(0, __uuidof(ID3D10Texture2D), (LPVOID*)&pBackBuffer);
-    if (FAILED(hr)) { MessageBox(NULL, "back bf", "error", MB_OK); return; }
+    if (FAILED(hr)) { MessageBox(NULL, "back buffer", "Error", MB_OK); return; }
     hr = g_pd3dDevice->CreateRenderTargetView(pBackBuffer, NULL, &g_mainRenderTargetView);
-    if (FAILED(hr)) { MessageBox(NULL, "rtv", "error", MB_OK); return; }
+    if (FAILED(hr)) { MessageBox(NULL, "rtv", "Error", MB_OK); return; }
     pBackBuffer->Release();
 }
 
@@ -182,7 +182,7 @@ static int InitializeLua(lua_State* L) {
     };
 
     luaL_newlib(L, imgui_funcs);
-    lua_setglobal(L, "ImGui");
+    lua_setglobal(L, "ImGuiC");
 
     return 0;
 }
@@ -228,7 +228,7 @@ static const struct luaL_Reg z_imgui[] = {
     {NULL, NULL}
 };
 
-int luaopen_z_imgui(lua_State* L) {
+extern "C" int luaopen_z_imgui(lua_State* L) {
     luaL_newlib(L, z_imgui);
     return 1;
 }
