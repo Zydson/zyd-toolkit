@@ -12,6 +12,7 @@ gcc -shared -o modules/z_window.dll -I lua src/z_window.c -L lua/lib -llua54 -lU
 gcc -shared -o modules/z_process.dll -I lua src/z_process.c -L lua/lib -llua54 -lUser32 -lGdi32 -Os -s
 gcc -shared -o modules/z_keyboard.dll -I lua src/z_keyboard.c -L lua/lib -llua54 -lUser32 -lGdi32 -Os -s
 gcc -shared -o modules/z_memory.dll -I lua src/z_memory.c -L lua/lib -llua54 -lUser32 -lkernel32 -lGdi32 -Os -s
+gcc -shared -o modules/z_sqlite.dll -I lua -I sqlite src/z_sqlite.c sqlite/sqlite3.c -L lua/lib -llua54 -Os -s
 g++ -shared -o modules/z_imgui.dll -I lua src/z_imgui.c -L lua/lib -llua54 imgui/imgui.cpp imgui/imgui_draw.cpp imgui/imgui_widgets.cpp imgui/imgui_tables.cpp imgui/imgui_demo.cpp imgui/backends/imgui_impl_dx10.cpp imgui/backends/imgui_impl_win32.cpp -I imgui -I imgui/backends -ld3d10 -ld3dcompiler -lcomdlg32 -lole32 -luser32 -lgdi32 -ldwmapi -Os -s
 ```
 
@@ -24,6 +25,22 @@ print(screen.getResolution()["width"])
 ```
 
 ## Features
+
+- sqlite
+
+```lua
+local db, err = sqlite.open("test.db") -- If not found, new one will be created
+
+db:exec("CREATE TABLE `test`(id INTEGER PRIMARY KEY AUTOINCREMENT,something TEXT NOT NULL)")
+db:exec("INSERT INTO `test`(something) VALUES ('nothing')")
+local results = db:exec("SELECT * FROM test;")
+
+for _, row in ipairs(results) do
+    print(row.id, row.something)
+end
+
+db:close()
+```
 
 - ImGui
 ```lua
@@ -94,3 +111,5 @@ session:post(url,headers,data) -- headers and data should be in table
 [Lodepng](https://github.com/lvandeve/lodepng)
 
 [ImGui](https://github.com/ocornut/imgui)
+
+[sqlite](https://github.com/sqlite/sqlite)

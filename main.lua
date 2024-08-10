@@ -25,6 +25,7 @@ screen = require("z_screen")		-- Screen API
 window = require("z_window")		-- Window API
 process = require("z_process")		-- Process API
 imgui = require("z_imgui")			-- ImGui
+sqlite = require("z_sqlite")		-- Sqlite
 
 local _screenshot_hook = screen.getScreenshot
 screen.getScreenshot = function()
