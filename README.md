@@ -13,6 +13,8 @@ gcc -shared -o modules/z_process.dll -I lua src/z_process.c -L lua/lib -llua54 -
 gcc -shared -o modules/z_keyboard.dll -I lua src/z_keyboard.c -L lua/lib -llua54 -lUser32 -lGdi32 -Os -s
 gcc -shared -o modules/z_memory.dll -I lua src/z_memory.c -L lua/lib -llua54 -lUser32 -lkernel32 -lGdi32 -Os -s
 gcc -shared -o modules/z_sqlite.dll -I lua -I sqlite src/z_sqlite.c sqlite/sqlite3.c -L lua/lib -llua54 -Os -s
+gcc -shared -o modules/z_httpserver.dll -I lua src/z_httpserver.c -L lua/lib -llua54 -lUser32 -lws2_32 -lGdi32 -Os -s
+gcc -shared -o modules/z_threading.dll -I lua src/z_threading.c -L lua/lib -llua54 -lUser32 -lGdi32 -Os -s
 g++ -shared -o modules/z_imgui.dll -I lua src/z_imgui.c -L lua/lib -llua54 imgui/imgui.cpp imgui/imgui_draw.cpp imgui/imgui_widgets.cpp imgui/imgui_tables.cpp imgui/imgui_demo.cpp imgui/backends/imgui_impl_dx10.cpp imgui/backends/imgui_impl_win32.cpp -I imgui -I imgui/backends -ld3d10 -ld3dcompiler -lcomdlg32 -lole32 -luser32 -lgdi32 -ldwmapi -Os -s
 ```
 
@@ -71,6 +73,7 @@ db:close()
 ```
 
 - ImGui
+
 ```lua
 local text = "Hello, World!"
 local checkboxValue = false
@@ -97,28 +100,45 @@ while true do
     imgui.renderFrame()
 end
 ```
+
+- Threads
+
+```lua
+threading.Thread(some_func,arg1,arg2,arg3,...)
+print("Hello") -- This will be executed wheter the function above was fully executed
+```
+
 - Mouse
+
 ```lua
 -- Click mouse buttons at specific coords (if not specified then current location will be used)
 mouse.left(x,y)
 mouse.right(x,y)
 mouse.middle(x,y)
 ```
+
 - Keyboard
+
 ```lua
 keyboard.send_keys(text)
 ```
+
 - Screen
+
 ```lua
 screen.getResolution() -- returns width and height of main screen
 screen.getScreenshot() -- returns screenshot as base64 encoded string
 ```
+
 - Window
+
 ```lua
 window.alert(text,title) -- Windows alert box
 window.confirm(text,title) -- Wndows confirm box (returns true/false depending on what was clicked)
 ```
+
 - Process
+
 ```lua
 process.list() -- returns table that contains PIDs
 process.get_name(PID) -- returns name of the process
@@ -128,7 +148,9 @@ process.freeze(PID) -- freezes all threads execution
 process.unfreeze(PID)
 process.kill(PID) -- kills specified process
 ```
+
 - Requests
+
 ```lua
 local session = ZYD.session:new(proxy,username,password) -- Args are not required
 session:get(url,headers) -- returns html code as string, headers should be in table - ex. {["Host"]="a.com"}

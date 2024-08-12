@@ -267,10 +267,3 @@ function ZYD.Base64:toImage(encryptedString,format)
 		io.open("image."..format, "wb"):write(a):close()
 	end
 end
-
-function aha(a)
-	print(a.."Tu")
-end
-
-threading.Thread(aha,"fjut","aha")
-os.execute("sleep 5")
