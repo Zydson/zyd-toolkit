@@ -26,14 +26,42 @@ print(screen.getResolution()["width"])
 
 ## Features
 
+- HTTP Server
+
+```lua
+-- request table contains (url,method,ip,headers)
+http_serv.route("/", function(request)
+    return Render("index.html",{title="abc",some="value"}) --return dynamic html page, see usage below
+    --[[
+        <title>{{ title }}</title> -- {{ title }} will be replaced with "abc"
+        <h1>{{some}}</h1> -- {{some}} will be replaced with "value"
+    ]]
+end)
+
+http_serv.route("/", function(request)
+    return "Hello, World!" -- You can return plain text
+end)
+
+http_serv.route("/json", function(request)
+    return {a = "value", a1 = "value"} -- You can return table which will be parsed to json
+end)
+
+http_serv.route("/error", function(request)
+    return 404 -- You can also return status code
+    return 429, "Rate limited" -- it will work too
+end)
+
+http_serv.start(port) 
+```
+
 - sqlite
 
 ```lua
 local db, err = sqlite.open("test.db") -- If not found, new one will be created
 
-db:exec("CREATE TABLE `test`(id INTEGER PRIMARY KEY AUTOINCREMENT,something TEXT NOT NULL)")
-db:exec("INSERT INTO `test`(something) VALUES ('nothing')")
-local results = db:exec("SELECT * FROM test;")
+db:exec("CREATE TABLE `test`(`id` INTEGER PRIMARY KEY AUTOINCREMENT, `something` TEXT NOT NULL)")
+db:exec("INSERT INTO `test`(`something`) VALUES ('nothing')")
+local results = db:exec("SELECT * FROM `test`;")
 
 for _, row in ipairs(results) do
     print(row.id, row.something)
@@ -53,7 +81,7 @@ local comboIndex = 1
 local comboItems = {"Option 1", "Option 2", "Option 3"}
 local colorValue = {1.0, 0.0, 0.0, 1.0}
 
-local function lua_render()
+function lua_render()
     ImGuiC.Text(text)
     checkboxValue = ImGuiC.Checkbox(text, checkboxValue)
     sliderIntValue = ImGuiC.SliderInt(text, sliderIntValue, 0, 100)

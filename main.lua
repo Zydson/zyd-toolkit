@@ -26,6 +26,8 @@ window = require("z_window")		-- Window API
 process = require("z_process")		-- Process API
 imgui = require("z_imgui")			-- ImGui
 sqlite = require("z_sqlite")		-- Sqlite
+http_serv = require("z_httpserver")
+threading = require("z_threading")
 
 local _screenshot_hook = screen.getScreenshot
 screen.getScreenshot = function()
@@ -265,3 +267,10 @@ function ZYD.Base64:toImage(encryptedString,format)
 		io.open("image."..format, "wb"):write(a):close()
 	end
 end
+
+function aha(a)
+	print(a.."Tu")
+end
+
+threading.Thread(aha,"fjut","aha")
+os.execute("sleep 5")
