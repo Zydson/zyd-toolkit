@@ -140,13 +140,15 @@ window.confirm(text,title) -- Wndows confirm box (returns true/false depending o
 - Process
 
 ```lua
-process.list() -- returns table that contains PIDs
-process.get_name(PID) -- returns name of the process
-process.get_path(PID) -- returns executable path of the process
-process.get_memory_usage(PID) -- returns memory usage of process in bytes
-process.freeze(PID) -- freezes all threads execution
-process.unfreeze(PID)
-process.kill(PID) -- kills specified process
+process.list() -- returns table that contains process handles
+
+handle.pid -- PID of the process
+handle.get_name() -- returns name of the process
+handle.get_path() -- returns executable path of the process
+handle.get_memory_usage() -- returns memory usage of process in bytes
+handle.freeze() -- freezes all threads execution
+handle.unfreeze() --\
+handle.kill() -- kills specified process
 ```
 
 - Requests

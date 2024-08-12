@@ -5,28 +5,8 @@
 #include <tlhelp32.h>
 #include <stdio.h>
 
-static int list(lua_State *L) {
-    DWORD aProcesses[1024], cbNeeded, cProcesses;
-    unsigned int i;
-
-    if (!EnumProcesses(aProcesses, sizeof(aProcesses), &cbNeeded)) {
-        return 1;
-    }
-
-    cProcesses = cbNeeded / sizeof(DWORD);
-    lua_newtable(L);
-    for (i = 0; i < cProcesses; i++) {
-        if (aProcesses[i] != 0) {
-            lua_pushinteger(L, aProcesses[i]);
-            lua_rawseti(L, -2, i);
-        }
-    }
-
-    return 1;
-};
-
 static int get_path(lua_State *L) {
-    DWORD pid = luaL_checkinteger(L,1);
+    DWORD pid = (uintptr_t)lua_touserdata(L, lua_upvalueindex(1));
     HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, pid);
 
     if (hProcess == NULL) {
@@ -50,7 +30,7 @@ static int get_path(lua_State *L) {
 };
 
 static int get_name(lua_State *L) {
-    DWORD pid = luaL_checkinteger(L,1);
+    DWORD pid = (uintptr_t)lua_touserdata(L, lua_upvalueindex(1));
     TCHAR procName[MAX_PATH] = TEXT("unknown");
     HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, pid);
     if (hProcess != NULL) {
@@ -67,7 +47,7 @@ static int get_name(lua_State *L) {
 };
 
 static int get_memory_usage(lua_State *L) {
-    DWORD pid = luaL_checkinteger(L,1);
+    DWORD pid = (uintptr_t)lua_touserdata(L, lua_upvalueindex(1));
     HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, pid);
 
     if (hProcess == NULL) {
@@ -87,7 +67,7 @@ static int get_memory_usage(lua_State *L) {
 };
 
 static int kill(lua_State *L) {
-    DWORD pid = luaL_checkinteger(L,1);
+    DWORD pid = (uintptr_t)lua_touserdata(L, lua_upvalueindex(1));
     HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, pid);
     if (hProcess == NULL) {
         lua_pushboolean(L,0);
@@ -103,7 +83,7 @@ static int kill(lua_State *L) {
 };
 
 static int freeze(lua_State *L) {
-    DWORD pid = luaL_checkinteger(L,1);
+    DWORD pid = (uintptr_t)lua_touserdata(L, lua_upvalueindex(1));
     HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
     if (hSnapshot == INVALID_HANDLE_VALUE) {
         lua_pushboolean(L,0);
@@ -133,7 +113,7 @@ static int freeze(lua_State *L) {
 };
 
 static int unfreeze(lua_State *L) {
-    DWORD pid = luaL_checkinteger(L,1);
+    DWORD pid = (uintptr_t)lua_touserdata(L, lua_upvalueindex(1));
     HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
     if (hSnapshot == INVALID_HANDLE_VALUE) {
         lua_pushboolean(L,0);
@@ -159,6 +139,54 @@ static int unfreeze(lua_State *L) {
     }
     lua_pushboolean(L,1);
     CloseHandle(hSnapshot);
+    return 1;
+};
+
+static int list(lua_State *L) {
+    DWORD aProcesses[1024], cbNeeded, cProcesses;
+    unsigned int i;
+
+    if (!EnumProcesses(aProcesses, sizeof(aProcesses), &cbNeeded)) {
+        return 1;
+    }
+
+    cProcesses = cbNeeded / sizeof(DWORD);
+    lua_newtable(L);
+    for (int i = 0; i < cProcesses; i++) {
+        if (aProcesses[i] != 0) {
+            lua_newtable(L);
+
+            lua_pushinteger(L,aProcesses[i]);
+            lua_setfield(L, -2, "pid");
+
+            lua_pushlightuserdata(L, (void *)(uintptr_t)aProcesses[i]);
+            lua_pushcclosure(L, get_path, 1);
+            lua_setfield(L, -2, "get_path");
+
+            lua_pushlightuserdata(L, (void *)(uintptr_t)aProcesses[i]);
+            lua_pushcclosure(L, get_name, 1);
+            lua_setfield(L, -2, "get_name");
+
+            lua_pushlightuserdata(L, (void *)(uintptr_t)aProcesses[i]);
+            lua_pushcclosure(L, get_memory_usage, 1);
+            lua_setfield(L, -2, "get_memory_usage");
+
+            lua_pushlightuserdata(L, (void *)(uintptr_t)aProcesses[i]);
+            lua_pushcclosure(L, kill, 1);
+            lua_setfield(L, -2, "kill");
+
+            lua_pushlightuserdata(L, (void *)(uintptr_t)aProcesses[i]);
+            lua_pushcclosure(L, freeze, 1);
+            lua_setfield(L, -2, "freeze");
+
+            lua_pushlightuserdata(L, (void *)(uintptr_t)aProcesses[i]);
+            lua_pushcclosure(L, unfreeze, 1);
+            lua_setfield(L, -2, "unfreeze");
+
+            lua_rawseti(L, -2, i + 1);
+        }
+    }
+
     return 1;
 };
 
