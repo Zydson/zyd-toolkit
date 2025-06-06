@@ -21,7 +21,7 @@ g++ -shared -o modules/z_imgui.dll -I lua src/z_imgui.c -L lua/lib -llua54 imgui
 ## How to use it?
 
 ```lua
-require "main" -- Imports all the features that you can see below
+require "main" -- Imports all the features that you can see below in "Features" section
 
 print(screen.getResolution()["width"])
 ```
