@@ -97,7 +97,7 @@ end
 imgui.initialize(title, width, height)
 
 while true do
-    imgui.renderFrame()
+    imgui.renderFrame() -- It needs to be executed every frame, otherwise it won't be displayed
 end
 ```
 
@@ -105,7 +105,7 @@ end
 
 ```lua
 threading.Thread(some_func,arg1,arg2,arg3,...)
-print("Hello") -- This will be executed wheter the function above was fully executed
+print("Hello") -- This will be executed wheter the function "some_func" was fully processed
 ```
 
 - Mouse
@@ -156,7 +156,7 @@ handle.kill() -- kills specified process
 ```lua
 local session = ZYD.session:new(proxy,username,password) -- Args are not required
 session:get(url,headers) -- returns html code as string, headers should be in table - ex. {["Host"]="a.com"}
-session:post(url,headers,data) -- headers and data should be in table
+session:post(url,headers,data) -- headers and data should be in table, otherwise error will be thrown
 ```
 
 ## Credits
